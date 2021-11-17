@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GAME2001_Assignment2_RagusaGiuseppe", "GAME2001_Assignment2_RagusaGiuseppe\GAME2001_Assignment2_RagusaGiuseppe.vcxproj", "{3E67E66F-81AD-4494-A894-AB969CA804FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Debug|x64.ActiveCfg = Debug|x64
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Debug|x64.Build.0 = Debug|x64
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Debug|x86.Build.0 = Debug|Win32
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Release|x64.ActiveCfg = Release|x64
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Release|x64.Build.0 = Release|x64
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Release|x86.ActiveCfg = Release|Win32
+		{3E67E66F-81AD-4494-A894-AB969CA804FD}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68CCD518-5ECC-4BF9-AB75-537664D34B87}
+	EndGlobalSection
+EndGlobal
