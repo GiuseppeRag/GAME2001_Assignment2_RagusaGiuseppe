@@ -13,6 +13,8 @@ public:
 	T& operator*();
 	void operator++();
 	void operator++(int);
+	void operator--();
+	void operator--(int);
 	bool operator!=(LinkNode<T>* node);
 	bool operator==(LinkNode<T>* node);
 private:
@@ -37,6 +39,7 @@ template<typename T>
 void LinkListIterator<T>::operator++()
 {
 	//Assert: node is not NULL
+	//Assert: noe is not TAIL
 	m_currentNode = m_currentNode->m_pNext;
 }
 
@@ -44,7 +47,24 @@ template<typename T>
 void LinkListIterator<T>::operator++(int)
 {
 	//Assert: node is not NULL
+	//Assert: node is not TAIL
 	m_currentNode = m_currentNode->m_pNext;
+}
+
+template<typename T>
+void LinkListIterator<T>::operator--()
+{
+	//Assert: node is not NULL
+	//Assert: node is not ROOT
+	m_currentNode = m_currentNode->m_pPrev;
+}
+
+template<typename T>
+void LinkListIterator<T>::operator--(int)
+{
+	//Assert: node is not NULL
+	//Assert: node is not ROOT
+	m_currentNode = m_currentNode->m_pPrev;
 }
 
 template<typename T>

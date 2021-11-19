@@ -35,7 +35,7 @@ DoublyLinkList<T>::~DoublyLinkList()
 {
 	while (m_pRoot)
 	{
-		//Pop();
+		Pop();
 	}
 }
 
