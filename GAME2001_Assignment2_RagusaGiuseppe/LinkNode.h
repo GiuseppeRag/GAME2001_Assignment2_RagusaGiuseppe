@@ -14,7 +14,7 @@ class LinkNode
 	friend class DoublyLinkList<T>;
 
 public:
-	LinkNode(T data);
+	LinkNode(T data, int priority);
 private:
 	T m_data;
 	int m_priority;
@@ -24,9 +24,10 @@ private:
 
 //Template constructor
 template<typename T>
-LinkNode<T>::LinkNode(T data)
+LinkNode<T>::LinkNode(T data, int priority)
 {
 	m_data = data;
+	m_priority = priority;
 	m_pNext = nullptr;
 	m_pPrev = nullptr;
 }

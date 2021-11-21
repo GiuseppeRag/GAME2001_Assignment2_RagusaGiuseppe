@@ -10,47 +10,50 @@ public:
 	DoublyLinkList();
 	~DoublyLinkList();
 
-	LinkNode<T>* Root();
-	LinkNode<T>* Tail();
+	LinkNode<T>* Last();
+	LinkNode<T>* First();
 	LinkNode<T>* End();
 
-	void Push(T newData);
+	void Push(T newData, int priority, bool ascending);
 	void Pop();
 private:
 	int m_size;
-	LinkNode<T>* m_pRoot;
-	LinkNode<T>* m_pTail;
+	//The "root" of the list is actually the last element in the list, since it was the first item inserted 
+	LinkNode<T>* m_pLast;
+
+	//The "tail" of the list is the first element, since it was the last item inserted
+	LinkNode<T>* m_pFirst;
 };
 
 template<typename T>
 DoublyLinkList<T>::DoublyLinkList()
 {
 	m_size = 0;
-	m_pRoot = nullptr;
-	m_pTail = nullptr;
+	m_pLast = nullptr;
+	m_pFirst = nullptr;
 }
 
 template<typename T>
 DoublyLinkList<T>::~DoublyLinkList()
 {
-	while (m_pRoot)
+	while (m_pLast)
 	{
 		Pop();
 	}
 }
 
 template<typename T>
-LinkNode<T>* DoublyLinkList<T>::Root()
+LinkNode<T>* DoublyLinkList<T>::Last()
 {
-	//Assert: Root is not Null
-	return m_pRoot;
+	//Assert: Last is not Null
+	return m_pLast;
 }
 
 template<typename T>
-LinkNode<T>* DoublyLinkList<T>::Tail()
+LinkNode<T>* DoublyLinkList<T>::First()
 {
-	//Assert: Tail is not NULL
-	return m_pTail;
+	//Assert: First is not NULL
+	return m_pFirst;
 }
 
 template<typename T>
@@ -60,23 +63,71 @@ LinkNode<T>* DoublyLinkList<T>::End()
 }
 
 template<typename T>
-void DoublyLinkList<T>::Push(T newData)
+void DoublyLinkList<T>::Push(T newData, int priority, bool ascending)
 {
-	LinkNode<T>* node = new LinkNode<T>(newData);
+	LinkNode<T>* node = new LinkNode<T>(newData, priority);
 
 	//Assert: Node is not Null
 
-	if (m_pRoot == nullptr) {
-		m_pRoot = node;
-		m_pTail = m_pRoot;
+	//Is the list empty?
+	if (m_pLast == nullptr) {
+		m_pLast = node;
+		m_pFirst = m_pLast;
 	}
+	else if ((m_pLast->m_priority < node->m_priority && ascending) || (m_pLast->m_priority > node->m_priority && !ascending)) {
+		m_pLast->m_pPrev = node;
+		node->m_pNext = m_pLast;
+		m_pLast = node;
+	}
+	else if ((m_pFirst->m_priority > node->m_priority && ascending) || (m_pFirst->m_priority < node->m_priority && !ascending))
+	{
+		m_pFirst->m_pNext = node;
+		node->m_pPrev = m_pFirst;
+		m_pFirst = node;
+	}
+	//loop through the linked list and see if it belongs in the middle of the list
 	else {
-		LinkNode<T>* prev = m_pTail;
-		m_pTail->m_pNext = node;
-		m_pTail = node;
-		m_pTail->m_pPrev = prev;
+		LinkNode<T>* IteratorNode = m_pLast;
 
-		prev = nullptr;
+		while (IteratorNode->m_pNext != nullptr) {
+			//perform this check if ascending
+			if (ascending) {
+				if (IteratorNode->m_pNext->m_priority < node->m_priority) {
+					node->m_pPrev = IteratorNode;
+					node->m_pNext = IteratorNode->m_pNext;
+					IteratorNode->m_pNext->m_pPrev = node;
+					IteratorNode->m_pNext = node;
+					break;
+				}
+				else
+					IteratorNode = IteratorNode->m_pNext;
+			}
+			//perform this check if descending
+			else
+			{
+				if (IteratorNode->m_pNext->m_priority > node->m_priority)
+				{
+					node->m_pPrev = IteratorNode;
+					node->m_pNext = IteratorNode->m_pNext;
+					IteratorNode->m_pNext->m_pPrev = node;
+					IteratorNode->m_pNext = node;
+					break;
+				}
+				else
+					IteratorNode = IteratorNode->m_pNext;
+			}
+		}
+
+		//If The loop was broken early, this condition would not activate because the new spot was already found
+		if (IteratorNode->m_pNext == nullptr)
+		{
+			IteratorNode->m_pNext = node;
+			node->m_pPrev = IteratorNode;
+			m_pFirst = node;
+		}
+
+		IteratorNode = nullptr;
+		node = nullptr;
 	}
 
 	m_size++;
@@ -86,22 +137,22 @@ void DoublyLinkList<T>::Push(T newData)
 template<typename T>
 void DoublyLinkList<T>::Pop()
 {
-	//Assert: root is not NULL
+	//Assert: Last is not NULL
 
-	if (m_pRoot->m_pNext == nullptr)
+	if (m_pLast->m_pNext == nullptr)
 	{
-		delete m_pRoot;
-		m_pRoot = nullptr;
-		m_pTail = nullptr;
+		delete m_pLast;
+		m_pLast = nullptr;
+		m_pFirst = nullptr;
 	}
 	else
 	{
-		LinkNode<T>* newLastNode = m_pTail->m_pPrev;
+		LinkNode<T>* newLastNode = m_pLast->m_pNext;
 		//Assert: newLastNode is not NULL
 
-		delete m_pTail;
-		m_pTail = newLastNode;
-		m_pTail->m_pNext = End();
+		delete m_pLast;
+		m_pLast = newLastNode;
+		m_pLast->m_pPrev = End();
 
 		newLastNode = nullptr;
 	}

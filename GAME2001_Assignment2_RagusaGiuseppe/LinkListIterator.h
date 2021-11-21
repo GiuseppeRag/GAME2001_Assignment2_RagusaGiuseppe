@@ -8,6 +8,10 @@ class LinkListIterator
 public:
 	LinkListIterator() {}
 
+	LinkNode<T>* CurrentNode();
+	T CurrentNodeData();
+	int CurrentNodePriority();
+
 	//overloaded operators
 	void operator=(LinkNode<T>* node);
 	T& operator*();
@@ -20,6 +24,24 @@ public:
 private:
 	LinkNode<T>* m_currentNode;
 };
+
+template<typename T>
+LinkNode<T>* LinkListIterator<T>::CurrentNode()
+{
+	return m_currentNode;
+}
+
+template<typename T>
+T LinkListIterator<T>::CurrentNodeData()
+{
+	return m_currentNode->m_data;
+}
+
+template<typename T>
+int LinkListIterator<T>::CurrentNodePriority()
+{
+	return m_currentNode->m_priority;
+}
 
 template<typename T>
 void LinkListIterator<T>::operator=(LinkNode<T>* node)

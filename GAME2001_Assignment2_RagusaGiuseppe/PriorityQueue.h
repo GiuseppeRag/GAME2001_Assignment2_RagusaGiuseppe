@@ -3,18 +3,19 @@
 #include "DoublyLinkedLink.h"
 #include "LinkListIterator.h"
 
+using namespace std;
+
 template <typename T>
 class PriorityQueue
 {
 public:
-	PriorityQueue();
+	PriorityQueue(bool mode);
 	~PriorityQueue();
 
 	LinkNode<T>* Front();
 	LinkNode<T>* Back();
-	void Push(T data);
+	void Push(T data, int priority);
 	void Pop();
-	void SwapMode();
 	bool GetMode();
 	LinkNode<T>* Search(T dataToFind);
 	int Size();
@@ -24,17 +25,15 @@ public:
 private:
 	DoublyLinkList<T>* m_pList;
 	LinkListIterator<T> m_pIterator;
-	bool m_reverseMode;
+	bool m_ascendingMode;
 };
 
 template<typename T>
-PriorityQueue<T>::PriorityQueue()
+PriorityQueue<T>::PriorityQueue(bool mode)
 {
+	m_ascendingMode = mode;
 	m_pList = new DoublyLinkList<T>();
 	m_pIterator = LinkListIterator<T>();
-
-	//Indicates the mode of Searching and Inserting. When false, start traversing from the Root of the list. When true, start from the Tail
-	m_reverseMode = false;
 }
 
 template<typename T>
@@ -56,34 +55,21 @@ LinkNode<T>* PriorityQueue<T>::Back()
 }
 
 template<typename T>
-void PriorityQueue<T>::Push(T data)
+void PriorityQueue<T>::Push(T data, int priority)
 {
-	if (m_reverseMode)
-		//PushBack
-	else
-		m_pList->Push(data);
+	m_pList->Push(data, priority, m_ascendingMode);
 }
 
 template<typename T>
-inline void PriorityQueue<T>::Pop()
+void PriorityQueue<T>::Pop()
 {
-	if (m_reverseMode)
-		//PopBack
-	else
-		m_pList->Pop();
-}
-
-template<typename T>
-inline void PriorityQueue<T>::SwapMode()
-{
-	m_reverseMode = !m_reverseMode;
-	cout << "Reverse Mode has been set to " << (m_reverseMode ? "TRUE" : "FALSE") << endl;
+	m_pList->Pop();
 }
 
 template<typename T>
 bool PriorityQueue<T>::GetMode()
 {
-	return m_reverseMode;
+	return m_ascendingMode;
 }
 
 template<typename T>
@@ -98,13 +84,17 @@ int PriorityQueue<T>::Size()
 }
 
 template<typename T>
-inline bool PriorityQueue<T>::IsEmpty()
+bool PriorityQueue<T>::IsEmpty()
 {
 	return m_pList->m_size == 0;
 }
 
 template<typename T>
-inline void PriorityQueue<T>::PrintList()
+void PriorityQueue<T>::PrintList()
 {
-
+	for (m_pIterator = m_pList->Last(); m_pIterator != nullptr; m_pIterator++)
+	{
+		cout << "Data: " << m_pIterator.CurrentNodeData() << "   Priority: " << m_pIterator.CurrentNodePriority() << endl;
+	}
+	m_pIterator = m_pList->Last();
 }

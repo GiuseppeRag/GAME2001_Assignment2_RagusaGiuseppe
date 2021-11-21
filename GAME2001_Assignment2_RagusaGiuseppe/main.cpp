@@ -1,30 +1,21 @@
 #include <iostream>
 #include <string>
-#include "DoublyLinkedLink.h"
-#include "LinkListIterator.h"
+#include "PriorityQueue.h"
 
 using namespace std;
 
 int main()
 {
-	DoublyLinkList<int>* list = new DoublyLinkList<int>();
+	PriorityQueue<string> queue = PriorityQueue<string>(true);
 
-	list->Push(6);
-	list->Push(3);
-	list->Push(1);
-	list->Push(10);
-	list->Pop();
-	list->Push(11);
-	list->Push(17);
-	list->Pop();
-	list->Pop();
-	list->Push(4);
+	queue.Push("Apples", 3);
+	queue.Push("Bananas", 5);
+	queue.Push("Cake", 7);
+	queue.Push("Donut", 6);
 
-	LinkListIterator<int> iterator;
+	queue.Pop();
 
-	for (iterator = list->Root(); iterator != list->End(); iterator++)
-	{
-		cout << *iterator << " ";
-	}
+	queue.PrintList();
+
 	return 0;
 }
