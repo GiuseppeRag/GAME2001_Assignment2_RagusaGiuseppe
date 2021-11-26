@@ -10,152 +10,177 @@ public:
 	DoublyLinkList();
 	~DoublyLinkList();
 
-	LinkNode<T>* Last();
 	LinkNode<T>* First();
+	LinkNode<T>* Last();
 	LinkNode<T>* End();
+	int Size();
 
 	void Push(T newData, int priority, bool ascending);
 	void Pop();
 private:
 	int m_size;
-	//The "root" of the list is actually the last element in the list, since it was the first item inserted 
+	LinkNode<T>* m_pFirst;
 	LinkNode<T>* m_pLast;
 
-	//The "tail" of the list is the first element, since it was the last item inserted
-	LinkNode<T>* m_pFirst;
+	//Return a different condition depending on whether the list is ascending or descending
+	bool FirstNodeCondition(bool ascending, LinkNode<T>* node);
+	bool LastNodeCondition(bool ascending, LinkNode<T>* node);
+	bool CompareNodeCondition(bool ascending, LinkNode<T>* currentNode, LinkNode<T>* newNode);
 };
 
+// Constructor
 template<typename T>
-DoublyLinkList<T>::DoublyLinkList()
-{
-	m_size = 0;
-	m_pLast = nullptr;
-	m_pFirst = nullptr;
-}
+DoublyLinkList<T>::DoublyLinkList() : m_size(0), m_pFirst(nullptr), m_pLast(nullptr) {}
 
+// Destructor
 template<typename T>
 DoublyLinkList<T>::~DoublyLinkList()
 {
+	//Pops everything in the list as long as m_pLast has a value (stops when m_pLast is null aka the last element is gone)
 	while (m_pLast)
-	{
 		Pop();
-	}
 }
 
-template<typename T>
-LinkNode<T>* DoublyLinkList<T>::Last()
-{
-	//Assert: Last is not Null
-	return m_pLast;
-}
-
+// Returns the node at the front of the queue
 template<typename T>
 LinkNode<T>* DoublyLinkList<T>::First()
 {
-	//Assert: First is not NULL
-	return m_pFirst;
+	if (AssertHelper::Assert(m_pFirst != nullptr, "List is Empty!"))
+		return m_pFirst;
+	return nullptr;
 }
 
+// Returns the node at the back of the queue
+template<typename T>
+LinkNode<T>* DoublyLinkList<T>::Last()
+{
+	if (AssertHelper::Assert(m_pLast != nullptr, "List is Empty!"))
+		return m_pLast;
+	return nullptr;
+}
+
+// Returns nullptr (The m_prev pointer of the first node is NULL, and the m_next pointer of the last node is NULL)
 template<typename T>
 LinkNode<T>* DoublyLinkList<T>::End()
 {
 	return nullptr;
 }
 
+// Returns the size of the list
+template<typename T>
+int DoublyLinkList<T>::Size()
+{
+	return m_size;
+}
+
+// Pushes a new node with the specified data into the queue. Sets the nodes position based on priority and mode
 template<typename T>
 void DoublyLinkList<T>::Push(T newData, int priority, bool ascending)
 {
 	LinkNode<T>* node = new LinkNode<T>(newData, priority);
 
-	//Assert: Node is not Null
+	if (AssertHelper::Assert(node != nullptr, "Data failed to add")) {
 
-	//Is the list empty?
-	if (m_pLast == nullptr) {
-		m_pLast = node;
-		m_pFirst = m_pLast;
-	}
-	else if ((m_pLast->m_priority < node->m_priority && ascending) || (m_pLast->m_priority > node->m_priority && !ascending)) {
-		m_pLast->m_pPrev = node;
-		node->m_pNext = m_pLast;
-		m_pLast = node;
-	}
-	else if ((m_pFirst->m_priority > node->m_priority && ascending) || (m_pFirst->m_priority < node->m_priority && !ascending))
-	{
-		m_pFirst->m_pNext = node;
-		node->m_pPrev = m_pFirst;
-		m_pFirst = node;
-	}
-	//loop through the linked list and see if it belongs in the middle of the list
-	else {
-		LinkNode<T>* IteratorNode = m_pLast;
-
-		while (IteratorNode->m_pNext != nullptr) {
-			//perform this check if ascending
-			if (ascending) {
-				if (IteratorNode->m_pNext->m_priority < node->m_priority) {
-					node->m_pPrev = IteratorNode;
-					node->m_pNext = IteratorNode->m_pNext;
-					IteratorNode->m_pNext->m_pPrev = node;
-					IteratorNode->m_pNext = node;
-					break;
-				}
-				else
-					IteratorNode = IteratorNode->m_pNext;
-			}
-			//perform this check if descending
-			else
-			{
-				if (IteratorNode->m_pNext->m_priority > node->m_priority)
-				{
-					node->m_pPrev = IteratorNode;
-					node->m_pNext = IteratorNode->m_pNext;
-					IteratorNode->m_pNext->m_pPrev = node;
-					IteratorNode->m_pNext = node;
-					break;
-				}
-				else
-					IteratorNode = IteratorNode->m_pNext;
-			}
+		//CASE 1: Is the List Empty?
+		if (m_pFirst == nullptr) {
+			m_pFirst = node;
+			m_pLast = m_pFirst;
 		}
-
-		//If The loop was broken early, this condition would not activate because the new spot was already found
-		if (IteratorNode->m_pNext == nullptr)
-		{
-			IteratorNode->m_pNext = node;
-			node->m_pPrev = IteratorNode;
+		//CASE 2: Does the new node need to replace the current root node?
+		else if (FirstNodeCondition(ascending, node)) {
+			node->m_pNext = m_pFirst;
+			m_pFirst->m_pPrev = node;
 			m_pFirst = node;
 		}
+		//CASE 3: Does the new node need to replace the current tail node?
+		else if (LastNodeCondition(ascending, node)) {
+			m_pLast->m_pNext = node;
+			node->m_pPrev = m_pLast;
+			m_pLast = node;
+		}
+		//CASE 4: Node belongs in the middle of the list, find out where
+		else {
+			LinkNode<T>* IteratorNode = First();
 
-		IteratorNode = nullptr;
-		node = nullptr;
+			while (IteratorNode->m_pNext != nullptr) {
+				if (CompareNodeCondition(ascending, IteratorNode, node)) {
+					// Connect the prev node and next node to the newly created node, then break the loop
+					node->m_pPrev = IteratorNode;
+					node->m_pNext = IteratorNode->m_pNext;
+					IteratorNode->m_pNext->m_pPrev = node;
+					IteratorNode->m_pNext = node;
+					break;
+				}
+				else
+					IteratorNode++; //Go to the next node in the list
+			}
+
+			//If The loop was broken early, this condition would not activate because the new spot was already found
+			if (IteratorNode->m_pNext == nullptr)
+			{
+				IteratorNode->m_pNext = node;
+				node->m_pPrev = IteratorNode;
+				m_pLast = node;
+			}
+
+			//Clean up
+			IteratorNode = nullptr;
+			node = nullptr;
+		}
+
+		//Increase the Size
+		m_size++;
 	}
-
-	m_size++;
 
 }
 
+// Removes the node at the front of the queue
 template<typename T>
 void DoublyLinkList<T>::Pop()
 {
-	//Assert: Last is not NULL
+	if (AssertHelper::Assert(m_pFirst != nullptr, "Nothing to Pop, the list is empty!")) {
 
-	if (m_pLast->m_pNext == nullptr)
-	{
-		delete m_pLast;
-		m_pLast = nullptr;
-		m_pFirst = nullptr;
+		//CASE 1: Is there only 1 node left in the list?
+		if (m_pFirst->m_pNext == nullptr)
+		{
+			//delete the node
+			delete m_pFirst;
+			m_pFirst = nullptr;
+			m_pLast = nullptr;
+		}
+		//CASE 2: set the first node m_next pointer as the new node
+		else
+		{
+			LinkNode<T>* newFirstNode = m_pFirst->m_pNext;
+
+			delete m_pFirst;
+			m_pFirst = newFirstNode;
+			m_pFirst->m_pPrev = End();
+
+			//cleanup
+			newFirstNode = nullptr;
+		}
+		m_size--;
 	}
-	else
-	{
-		LinkNode<T>* newLastNode = m_pLast->m_pNext;
-		//Assert: newLastNode is not NULL
+}
 
-		delete m_pLast;
-		m_pLast = newLastNode;
-		m_pLast->m_pPrev = End();
+// Checks the first node if it needs to be replaced. Returns a different condition depending on ascending or descending mode
+template<typename T>
+bool DoublyLinkList<T>::FirstNodeCondition(bool ascending, LinkNode<T>* node)
+{
+	return ascending ? (m_pFirst->m_priority > node->m_priority) : (m_pFirst->m_priority < node->m_priority);
+}
 
-		newLastNode = nullptr;
-	}
+// Checks the last node if it needs to be replaced. Returns a different condition depending on ascending or descending mode
+template<typename T>
+bool DoublyLinkList<T>::LastNodeCondition(bool ascending, LinkNode<T>* node)
+{
+	return ascending ? (m_pLast->m_priority < node->m_priority) : (m_pLast->m_priority > node->m_priority);
+}
 
-	m_size = (m_size == 0 ? m_size : m_size - 1);
+// Checks for the spot where the new node will go. Returns a different condition depending on ascending or descending mode
+template<typename T>
+bool DoublyLinkList<T>::CompareNodeCondition(bool ascending, LinkNode<T>* currentNode, LinkNode<T>* newNode)
+{
+	return ascending ? (currentNode->m_pNext->m_priority > newNode->m_priority) : (currentNode->m_pNext->m_priority < newNode->m_priority);
 }

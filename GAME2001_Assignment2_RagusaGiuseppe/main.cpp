@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-	PriorityQueue<string> queue = PriorityQueue<string>(true);
+	PriorityQueue<string> queue = PriorityQueue<string>(false);
 
 	queue.Push("Apples", 3);
 	queue.Push("Bananas", 5);
@@ -15,7 +15,7 @@ int main()
 
 	queue.Pop();
 
-	queue.PrintList();
+	queue.PrintListReverse();
 
 	return 0;
 }

@@ -24,10 +24,4 @@ private:
 
 //Template constructor
 template<typename T>
-LinkNode<T>::LinkNode(T data, int priority)
-{
-	m_data = data;
-	m_priority = priority;
-	m_pNext = nullptr;
-	m_pPrev = nullptr;
-}
+LinkNode<T>::LinkNode(T data, int priority) : m_data(data), m_priority(priority), m_pNext(nullptr), m_pPrev(nullptr) {}
