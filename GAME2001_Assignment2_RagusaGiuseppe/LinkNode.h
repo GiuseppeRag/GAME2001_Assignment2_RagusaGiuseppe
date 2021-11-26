@@ -15,6 +15,8 @@ class LinkNode
 
 public:
 	LinkNode(T data, int priority);
+	T GetData();
+	int GetPriority();
 private:
 	T m_data;
 	int m_priority;
@@ -25,3 +27,15 @@ private:
 //Template constructor
 template<typename T>
 LinkNode<T>::LinkNode(T data, int priority) : m_data(data), m_priority(priority), m_pNext(nullptr), m_pPrev(nullptr) {}
+
+template<typename T>
+T LinkNode<T>::GetData()
+{
+	return m_data;
+}
+
+template<typename T>
+int LinkNode<T>::GetPriority()
+{
+	return m_priority;
+}

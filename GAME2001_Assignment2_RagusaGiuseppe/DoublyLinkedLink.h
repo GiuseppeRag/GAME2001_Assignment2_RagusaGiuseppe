@@ -92,44 +92,55 @@ void DoublyLinkList<T>::Push(T newData, int priority, bool ascending)
 			m_pFirst->m_pPrev = node;
 			m_pFirst = node;
 		}
-		//CASE 3: Does the new node need to replace the current tail node?
-		else if (LastNodeCondition(ascending, node)) {
-			m_pLast->m_pNext = node;
-			node->m_pPrev = m_pLast;
-			m_pLast = node;
-		}
+		////CASE 3: Does the new node need to replace the current tail node?
+		//else if (LastNodeCondition(ascending, node)) {
+		//	m_pLast->m_pNext = node;
+		//	node->m_pPrev = m_pLast;
+		//	m_pLast = node;
+		//}
 		//CASE 4: Node belongs in the middle of the list, find out where
 		else {
-			LinkNode<T>* IteratorNode = First();
+			LinkListIterator<T> IteratorNode = LinkListIterator<T>();
+			IteratorNode = First();
 
-			while (IteratorNode->m_pNext != nullptr) {
-				if (CompareNodeCondition(ascending, IteratorNode, node)) {
+			//Will hold the current node being pointed to, used to avoid accessing the Iterator every time
+			LinkNode<T>* currentNode = First();
+
+			while (currentNode->m_pNext != nullptr) {
+
+				if (CompareNodeCondition(ascending, currentNode, node)) {
 					// Connect the prev node and next node to the newly created node, then break the loop
-					node->m_pPrev = IteratorNode;
-					node->m_pNext = IteratorNode->m_pNext;
-					IteratorNode->m_pNext->m_pPrev = node;
-					IteratorNode->m_pNext = node;
+					node->m_pPrev = currentNode;
+					node->m_pNext = currentNode->m_pNext;
+					currentNode->m_pNext->m_pPrev = node;
+					currentNode->m_pNext = node;
 					break;
 				}
-				else
+				else {
 					IteratorNode++; //Go to the next node in the list
+					currentNode = IteratorNode.CurrentNode();
+				}
 			}
 
 			//If The loop was broken early, this condition would not activate because the new spot was already found
-			if (IteratorNode->m_pNext == nullptr)
+			if (currentNode->m_pNext == nullptr)
 			{
-				IteratorNode->m_pNext = node;
-				node->m_pPrev = IteratorNode;
+				currentNode->m_pNext = node;
+				node->m_pPrev = currentNode;
 				m_pLast = node;
 			}
 
 			//Clean up
 			IteratorNode = nullptr;
+			currentNode = nullptr;
 			node = nullptr;
 		}
 
 		//Increase the Size
 		m_size++;
+
+		//Display Success Message
+		cout << "New Node '" << newData << "' with Priority " << priority << " successfully added" << endl;
 	}
 
 }
@@ -161,6 +172,8 @@ void DoublyLinkList<T>::Pop()
 			newFirstNode = nullptr;
 		}
 		m_size--;
+
+		cout << "Front node has been removed successfully" << endl;
 	}
 }
 

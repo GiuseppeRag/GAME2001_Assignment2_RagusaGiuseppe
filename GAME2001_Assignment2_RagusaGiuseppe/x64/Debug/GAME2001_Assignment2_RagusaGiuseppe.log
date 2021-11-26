@@ -1,6 +1,3 @@
-﻿  AssertHelper.h
+﻿  main.cpp
 C:\Users\Valued Customer\Git Projects\GAME2001_Assignment2_RagusaGiuseppe\GAME2001_Assignment2_RagusaGiuseppe\AssertHelper.h(20,2): warning C4091: 'static ': ignored on left of 'AssertHelper' when no variable is declared
-  main.cpp
-C:\Users\Valued Customer\Git Projects\GAME2001_Assignment2_RagusaGiuseppe\GAME2001_Assignment2_RagusaGiuseppe\AssertHelper.h(20,2): warning C4091: 'static ': ignored on left of 'AssertHelper' when no variable is declared
-  Generating Code...
   GAME2001_Assignment2_RagusaGiuseppe.vcxproj -> C:\Users\Valued Customer\Git Projects\GAME2001_Assignment2_RagusaGiuseppe\x64\Debug\GAME2001_Assignment2_RagusaGiuseppe.exe
