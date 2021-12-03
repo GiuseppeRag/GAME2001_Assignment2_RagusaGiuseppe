@@ -11,11 +11,12 @@ int main()
 		 << "||            EXAMPLE 1           ||" << endl
 		 << "====================================" << endl;
 	PriorityQueue<string> queueAsc = PriorityQueue<string>(true);
+	LinkListIterator<string> itrAsc;
 
 	//Push Initial Values
-	queueAsc.Push("Buy Milk", 2);
-	queueAsc.Push("Rake The Leaves", 3);
-	queueAsc.Push("Walk the Dog", 1);
+	queueAsc.Push("Buy Milk", 4);
+	queueAsc.Push("Rake The Leaves", 2);
+	queueAsc.Push("Walk the Dog", 9);
 
 	//Veiw List
 	cout << endl << "Ascending Queue in Order:" << endl;
@@ -23,15 +24,16 @@ int main()
 	cout << endl;
 
 	//Push More Values
-	queueAsc.Push("Wash Dishes", 2);
-	queueAsc.Push("Make Dinner", 5);
-	queueAsc.Push("Video Games", 7);
+	queueAsc.Push("Wash Dishes", 1);
+	queueAsc.Push("Video Games", 11);
+	queueAsc.Push("Make Dinner", 3);
 
 	//Pop the first 2
 	queueAsc.Pop();
 	queueAsc.Pop();
 
-	cout << endl << "The Highest Task is " << queueAsc.Front()->GetData() << " with Priority " << queueAsc.Front()->GetPriority() << endl;
+	itrAsc = queueAsc.Front();
+	cout << endl << "The Highest Task is " << *itrAsc << " with Priority " << itrAsc.CurrentNodePriority() << endl;
 
 	//View List (IN REVERSE)
 	cout << endl << "Ascending Queue in Reverse Order" << endl;
@@ -43,16 +45,18 @@ int main()
 		 << "||            EXAMPLE 2           ||" << endl
 		 << "====================================" << endl << endl;
 	PriorityQueue<char> queueDes = PriorityQueue<char>(false);
+	LinkListIterator<char> itrDes;
 
 	queueDes.Pop();
 	queueDes.Push('A', 10);
 	queueDes.Pop();
-	queueDes.Push('Z', 10);
-	queueDes.Push('E', 2);
-	queueDes.Push('R', 8);
-	queueDes.Push('O', 5);
+	queueDes.Push('Z', 15);
+	queueDes.Push('E', 7);
+	queueDes.Push('R', 1);
+	queueDes.Push('O', 7);
 
-	cout << endl << "The Lowest Task is " << queueDes.Back()->GetData() << " with Priority " << queueDes.Back()->GetPriority() << endl;
+	itrDes = queueDes.Back();
+	cout << endl << "The Lowest Task is " << *itrDes << " with Priority " << itrDes.CurrentNodePriority() << endl;
 
 	//View List
 	cout << endl << "Descending Queue in Order" << endl;

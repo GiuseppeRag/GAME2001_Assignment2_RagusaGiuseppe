@@ -9,9 +9,10 @@ class LinkListIterator
 public:
 	LinkListIterator() {}
 
-	// Getter methods to prevent accidental overwrites 
+	// Used to access the actual node itself 
 	LinkNode<T>* CurrentNode();
-	T CurrentNodeData();
+
+	// Used to get priority, as PriorityQueue is not a friend of LinkNode
 	int CurrentNodePriority();
 
 	//overloaded operators
@@ -34,13 +35,6 @@ LinkNode<T>* LinkListIterator<T>::CurrentNode()
 	return m_currentNode;
 }
 
-// Returns the data being held in the node the iterator is pointing to
-template<typename T>
-T LinkListIterator<T>::CurrentNodeData()
-{
-	return m_currentNode->m_data;
-}
-
 //  Returns the priority of the node the iterator is point ot
 template<typename T>
 int LinkListIterator<T>::CurrentNodePriority()
@@ -55,13 +49,13 @@ void LinkListIterator<T>::operator=(LinkNode<T>* node)
 	m_currentNode = node;
 }
 
-// Deference Operator (An alternative to CurrentNodeData())
+// Deference Operator (was changed to return the node itself)
 template<typename T>
 T& LinkListIterator<T>::operator*()
 {
 	if (AssertHelper::Assert(m_currentNode != nullptr, "Selected Node is NULL"))
 		return m_currentNode->m_data;
-	return nullptr;
+	return m_currentNode->m_data;
 }
 
 // Pre-Increment: Skips to the next node in the list
